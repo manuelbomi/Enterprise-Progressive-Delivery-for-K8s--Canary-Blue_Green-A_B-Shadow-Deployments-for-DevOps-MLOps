@@ -107,7 +107,11 @@ This README explains *how* progressive delivery is implemented in Kubernetes-bas
   
 - Purpose: The goal is to compare specific business metrics (e.g., conversion rates, engagement, click-through rates) to determine which version performs better based on actual user behavior and feedback.
   
-- Advantage: Provides statistically significant, empirical data on how a new feature or model impacts the user experience and business outcomes. 
+- Advantage: Provides statistically significant, empirical data on how a new feature or model impacts the user experience and business outcomes.
+
+<ins>Combined A/B / Shadow deployment</ins>
+
+##### This typically describes a comprehensive strategy where a new version first undergoes a low-risk shadow deployment for technical validation (performance, stability), and only after it proves stable is it then rolled out via A/B testing to a portion of users to measure real-world impact and user engagement. This combines the safety of shadow deployments with the empirical validation of A/B testing, making it a robust and low-risk method for continuous delivery and improvement, especially for complex AI/ML systems. 
 
 ---
 

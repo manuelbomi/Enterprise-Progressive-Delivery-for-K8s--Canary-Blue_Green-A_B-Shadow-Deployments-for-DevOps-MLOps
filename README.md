@@ -48,7 +48,7 @@ This README explains *how* progressive delivery is implemented in Kubernetes-bas
 
 ## Architecture & Components
 
-Typical components in a progressive delivery pipeline:
+### Typical components in a progressive delivery pipeline:
 
 - **Kubernetes cluster(s)** — runtime for pods
 - **Ingress / Service Mesh** — Istio, Linkerd, or Kuma for traffic shaping/splitting
@@ -59,7 +59,8 @@ Typical components in a progressive delivery pipeline:
 - **GitOps** — ArgoCD or Flux for auto-syncing Git → cluster
 - **Alerting** — Alertmanager for Prometheus to notify and optionally trigger webhook-based rollbacks
 
-Diagram (Mermaid — place into GitHub README that supports Mermaid):
+
+
 
 ```mermaid
 

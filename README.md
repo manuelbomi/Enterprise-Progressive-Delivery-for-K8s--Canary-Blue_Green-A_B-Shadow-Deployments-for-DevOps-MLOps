@@ -278,6 +278,64 @@ spec:
       - setWeight: 100               # promote to 100%
 ```
 
+#### Apply Rollout:
+
+```python
+kubectl apply -f rollout-canary.yaml
+```
+
+### 4) <ins>AnalysisTemplate (Argo Rollouts) with Prometheus queries </ins>
+
+**analysistemplate-prom.yaml**
+
+```python
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: canary-analysis-template
+spec:
+  args:
+  - name: service
+    value: my-app-svc
+  metrics:
+  - name: request-error-rate
+    # Query Prometheus for HTTP 5xx rate for canary vs baseline
+    provider:
+      prometheus:
+        address: http://prometheus:9090
+        query: |
+          # ratio of 5xx errors in last 2 minutes over total requests
+          sum(rate(http_requests_total{job="my-app",status=~"5..",instance=~".*"}[2m]))
+          /
+          sum(rate(http_requests_total{job="my-app",instance=~".*"}[2m]))
+    threshold: 0.05  # fail if > 5% errors
+    failureLimit: 1
+  - name: latency-p95
+    provider:
+      prometheus:
+        address: http://prometheus:9090
+        query: |
+          histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job="my-app"}[2m])) by (le))
+    # threshold means: fail if p95 > 1.5s
+    threshold: 1.5
+    failureLimit: 1
+```
+
+Now reference the analysis template in the Rollout steps by adding analysis blocks to the steps (example shortened):
+
+```python
+...
+      steps:
+      - setWeight: 10
+      - pause:
+          duration: 2m
+          # run analysis after pause
+          analysis:
+            templates:
+            - templateName: canary-analysis-template
+...
+
+
 
 
 

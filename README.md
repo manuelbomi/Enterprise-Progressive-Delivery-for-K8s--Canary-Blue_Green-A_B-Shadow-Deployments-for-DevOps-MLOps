@@ -119,7 +119,7 @@ flowchart LR
 
 ## Detailed Examples (Code + Explanation)
 
-### A. Canary Rollout using Argo Rollouts + Istio + Prometheus Analysis
+## A. Canary Rollout using Argo Rollouts + Istio + Prometheus Analysis
 
 - Overview: Use Argo Rollouts to orchesrate canary steps and Istio to split traffic. Use a Prometheus-based AnalysisTemplate to decide whether to continue.
 
@@ -341,15 +341,26 @@ When the analysis fails, Argo Rollouts marks the rollout as Failed and will not 
 ### 5) <ins> Observability & Metrics exposition </ins>
 
 
-Your app should export the following Prometheus-style metrics:
+#### Your app should export the following Prometheus-style metrics:
 
-http_requests_total{status="200",job="my-app",instance="<pod>"}
+- http_requests_total{status="200",job="my-app",instance="<pod>"}
 
-http_request_duration_seconds_bucket{le="0.1",job="my-app"}
+- http_request_duration_seconds_bucket{le="0.1",job="my-app"}
 
-ML-specific metrics (if model): model_prediction_latency_seconds, model_prediction_accuracy, model_input_drift_{feature}
+- ML-specific metrics (if model): model_prediction_latency_seconds, model_prediction_accuracy, model_input_drift_{feature}
 
 You can implement /metrics endpoint with Prometheus client libraries (Python example below in ML metrics section).
+
+---
+
+## B. Blue/Green Deployment (Zero-downtime switch)
+
+#### Goal: Deploy green environment in parallel with blue, perform final checks, then switch 100% traffic to green
+
+### 1) <ins>  Two Deployments with distinct labels and services </ins>
+
+
+**deployment-blue.yaml (current)**
 
 
 

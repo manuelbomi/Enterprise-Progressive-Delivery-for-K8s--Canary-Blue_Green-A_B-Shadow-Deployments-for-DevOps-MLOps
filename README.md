@@ -324,7 +324,7 @@ spec:
 Now reference the analysis template in the Rollout steps by adding analysis blocks to the steps (example shortened):
 
 ```python
-...
+
       steps:
       - setWeight: 10
       - pause:
@@ -333,7 +333,7 @@ Now reference the analysis template in the Rollout steps by adding analysis bloc
           analysis:
             templates:
             - templateName: canary-analysis-template
-...
+```
 
 
 

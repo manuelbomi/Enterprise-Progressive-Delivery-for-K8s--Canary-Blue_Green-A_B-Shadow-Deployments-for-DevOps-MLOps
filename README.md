@@ -181,6 +181,12 @@ kubectl apply -f service.yaml
 ```
 
 
+### 2)<ins>Install Argo Rollouts and configure Istio virtualservice (if using Istio) </ins>
+
+
+(Assume Istio is installed and a Gateway exists.)
+
+
 
 
 

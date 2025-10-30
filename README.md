@@ -705,7 +705,7 @@ jobs:
 
 ## ML-specific Validation & Metrics (examples)
 
-##### A. Model metrics exporter (Python / Flask + Prometheus client)
+### A. Model metrics exporter (Python / Flask + Prometheus client)
 
 **metrics_exporter.py**
 
@@ -743,6 +743,76 @@ def metrics():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
 ```
+
+
+
+> [!NOTES] Export model-specific metrics: prediction_accuracy, prediction_confidence_distribution, input_feature_histograms (use custom collectors or push to a data store for offline drift detection).
+> Prometheus scrapes /metrics; Argo Rollouts AnalysisTemplate queries Prometheus.
+
+---
+
+### B. Example script to compute online accuracy (golden-label bias)
+
+#### If you have labeled feedback (delayed), periodically compute online accuracy for each variant and push a metric.
+
+**compute_accuracy.py**
+
+```python
+# pseudo-code: compute accuracy from logs or event database and push to Prometheus Pushgateway
+from prometheus_client import Gauge, CollectorRegistry, push_to_gateway
+registry = CollectorRegistry()
+g = Gauge('model_online_accuracy', 'Online accuracy', ['variant'], registry=registry)
+# compute accuracy per variant by reading event store
+g.labels(variant='v1').set(0.92)
+g.labels(variant='v2').set(0.88)
+push_to_gateway('pushgateway:9091', job='accuracy_job', registry=registry)
+
+```
+
+Argo Rollouts can query Pushgateway as datasource via Prometheus.
+
+
+### <ins>Best Practices & Operational Checklist</ins>
+
+- Start small: 1–5% for first canary step.
+
+- Define SLOs & SLIs: latency P95, error rate, model accuracy thresholds.
+
+- Automate analysis: Use Argo Rollouts AnalysisTemplates with Prometheus.
+
+- Use non-blocking shadow tests before canary.
+
+- Keep observable labels: add version, variant, rollout labels to all metrics and logs.
+
+- Retention window: keep old version running until you confirm new version health + business metrics.
+
+- Rollback fast: alerts should trigger rollback within seconds.
+
+- Secure promotion: require approvals for major releases (e.g., manual pause step in rollout).
+
+- Audit & trace: store rollout history and reasons for rollbacks in a central place (ArgoCD/Argo Rollouts history + logs).
+
+---
+
+## Appendices: Useful Snippets & Tools
+
+#### Tools to evaluate/promote rollouts:
+
+*kubectl argo rollouts get rollout my-app-rollout*
+
+kubectl argo rollouts promote my-app-rollout
+
+kubectl argo rollouts abort my-app-rollout
+
+Helpful Links:
+
+Argo Rollouts: https://argoproj.github.io/argo-rollouts/
+
+Istio Traffic Management: https://istio.io/latest/docs/tasks/traffic-management/
+
+Prometheus docs: https://prometheus.io/docs/introduction/overview/
+
+Seldon / KServe for ML serving & canary: https://kserve.github.io/
 
 
 

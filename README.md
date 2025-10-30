@@ -123,9 +123,63 @@ flowchart LR
 
 - Overview: Use Argo Rollouts to orchestrate canary steps and Istio to split traffic. Use a Prometheus-based AnalysisTemplate to decide whether to continue.
 
-<ins>1) Deploy v1 (current) Deployment + Service</ins>
+### 1) <ins>Deploy v1 (current) Deployment + Service</ins>
 
-deployment-v1.yaml
+**deployment-v1.yaml**
+
+```python
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-v1
+  labels:
+    app: my-app
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: v1
+    spec:
+      containers:
+      - name: my-app
+        image: your-registry/my-app:1.0.0
+        ports:
+        - containerPort: 8080
+        # Expose metrics endpoint for Prometheus (e.g., /metrics)
+
+```
+
+**service.yaml**
+
+```python
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-svc
+spec:
+  selector:
+    app: my-app
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+```
+
+### Apply:
+
+```python
+kubectl apply -f deployment-v1.yaml
+kubectl apply -f service.yaml
+```
+
 
 
 

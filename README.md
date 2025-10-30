@@ -77,6 +77,48 @@ flowchart LR
   J -->|Rollback| E
 ```
 
+---
+
+### End-to-End Workflows — High Level
+
+- Code & Model push → CI builds image + stores in registry.
+
+- CI updates Helm/manifest or pushes new chart / image tag to Git.
+
+- ArgoCD (or other GitOps) deploys manifests (Rollouts, Services).
+
+- Argo Rollouts + Istio handle traffic shifting (e.g., 10% → 30% → 100%).
+
+- Prometheus & Analysis evaluate metrics at each step.
+
+- If analysis passes → promote; if fails → rollback.
+
+- Observability & auditing record the rollout.
+
+---
+
+### Prerequisites & Tooling
+
+- Kubernetes cluster (minikube, k3s, EKS, GKE, AKS)
+
+- kubectl configured to the cluster
+
+- Istio (or alternative service mesh) installed (for traffic splitting) — optional but recommended for fine-grained traffic control
+
+- Argo Rollouts controller installed: kubectl apply -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+- Prometheus (and Alertmanager) for metrics & alerts
+
+- ArgoCD (optional) for GitOps sync
+
+- Container registry (Docker Hub, ECR, GCR)
+
+- Optional ML model registry (MLflow, S3, Artifact Registry)
+
+---
+
+## Detailed Examples (Code + Explanation)
+
 
 
 

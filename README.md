@@ -206,6 +206,31 @@ spec:
 
 #### istio-virtualservice.yaml — virtual service that Argo Rollouts updates via TrafficSplit (Argo will set weight)
 
+```python
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: my-app-virtualservice
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - my-gateway
+  http:
+  - route:
+    - destination:
+        host: my-app-svc
+        subset: v1
+      weight: 100
+    - destination:
+        host: my-app-svc
+        subset: v2
+      weight: 0
+```
+
+> [!NOTE]
+> Argo Rollouts can be configured to update Istio VirtualService to change weights.
+
 
 
 

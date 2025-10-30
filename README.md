@@ -2,7 +2,7 @@
 
 
 
-> A complete, production-oriented guide describing **progressive delivery** of applications and ML models on Kubernetes.  
+> A complete, production-oriented guide decsribing **progressive delivery** of applications and ML models on Kubernetes.  
 > Covers Canary rollouts, Blue/Green swaps, A/B testing, shadow testing, monitoring-driven promotion/rollback, and automated CI/CD + GitOps workflows. Includes **detailed, well-commented code examples** (Kubernetes, Istio, Argo Rollouts, Prometheus rules, GitHub Actions, and example model validation scripts).
 
 ---
@@ -29,7 +29,7 @@
 
 ## Introduction & Goals
 
-Progressive delivery lets teams deploy new application versions or ML models **gradually** to production, observe their behavior, and either promote or roll back based on run-time signals (latency, errors, and model-specific metrics like accuracy or data drift). This approach reduces risk and enables faster iteration.
+Progressive delivery allows teams to deploy new application versions or ML models **gradually** to production, observe their behavior, and either promote or roll back based on run-time signals (latency, errors, and model-specific metrics like accuracy or data drift). This approach reduces risk and enables faster iteration.
 
 This README explains *how* progressive delivery is implemented in Kubernetes-based enterprise environments and provides concrete examples you can copy into your repos.
 

@@ -800,11 +800,12 @@ Argo Rollouts can query Pushgateway as datasource via Prometheus.
 
 *kubectl argo rollouts get rollout my-app-rollout*
 
-kubectl argo rollouts promote my-app-rollout
+*kubectl argo rollouts promote my-app-rollout*
 
-kubectl argo rollouts abort my-app-rollout
+*kubectl argo rollouts abort my-app-rollout*
 
-Helpful Links:
+
+<ins>Helpful Links</ins>:
 
 Argo Rollouts: https://argoproj.github.io/argo-rollouts/
 
@@ -813,6 +814,12 @@ Istio Traffic Management: https://istio.io/latest/docs/tasks/traffic-management/
 Prometheus docs: https://prometheus.io/docs/introduction/overview/
 
 Seldon / KServe for ML serving & canary: https://kserve.github.io/
+
+---
+
+## Closing Notes
+
+##### Progressive delivery is a combination of engineering, product, and risk management. The infrastructure (Argo Rollouts, Istio, Prometheus) provides a robust, programmatic way to route traffic and evaluate health. ML-specific monitoring (accuracy, drift, confidence distribution) must be weaved into the same pipeline and used as first-class signals for promotion or rollback.
 
 
 

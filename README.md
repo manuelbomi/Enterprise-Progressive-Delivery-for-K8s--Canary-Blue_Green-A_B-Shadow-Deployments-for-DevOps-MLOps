@@ -1,4 +1,4 @@
-# Enterprise Progressive Delivery for Kubernetes — Canary, Blue/Green, A/B, Shadow Deployments for DevOps & MLOps
+# Enterprise Progressive Delivery for Kubernetes — Canary, Blue/Green, A/B and Shadow Deployments for MLOps & DevOps
 
 
 

@@ -363,6 +363,7 @@ You can implement /metrics endpoint with Prometheus client libraries (Python exa
 **deployment-blue.yaml (current)**
 
 ```python
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -385,7 +386,7 @@ spec:
       containers:
       - name: my-app
         image: your-registry/my-app:1.0.0
-...
+```
 
 
 

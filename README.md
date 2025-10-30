@@ -62,7 +62,7 @@ This README explains *how* progressive delivery is implemented in Kubernetes-bas
 
 
 
-```mermaid
+```python
 
 flowchart LR
   A[Developer Push] -->|CI Build| B[Container Registry]

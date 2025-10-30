@@ -457,6 +457,99 @@ spec:
         image: your-registry/my-app:1.0.0
 ```
 
+deployment-green.yaml (new)
+
+```python
+# Same as above but env: green and image: 1.1.0
+```
+
+##### service-bluegreen.yaml — single service points to one label; swap label when done
+
+```python
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+    env: blue   # change to 'green' when switching
+  ports:
+  - port: 80
+    targetPort: 8080
+```
+
+<ins>Switching strategy</ins>:
+
+- Deploy green (not yet receiving traffic).
+
+- Run smoke tests / integration tests against green pods (via port-forward or internal tests).
+
+- If green healthy → update service selector to env: green (atomic switch, all traffic goes to green).
+
+- If issues → keep blue or revert.
+
+> [!NOTE] With a service mesh you can also perform a weighted switch with Istio for smoother transition.
+
+---
+
+## C. A/B Testing (Business-metric experiments)
+
+#### Goal: Evaluate business metrics (e.g., conversion, CTR) by routing real users to different versions.
+
+<ins>Approach</ins>:
+
+- Define cohorts (user IDs hashed) and route by header or cookie.
+
+- Use Istio VirtualService or specialized experimentation frameworks (e.g., Flagship, Optimizely) to route X% of traffic deterministically by user ID hashing.
+
+#### Example Istio VirtualService snippet for A/B split by header:
+
+```python
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: my-app-ab
+spec:
+  hosts:
+  - "my-app.example.com"
+  http:
+  - match:
+    - headers:
+        x-user-group:
+          exact: "group-a"
+    route:
+    - destination:
+        host: my-app-svc
+        subset: variantA
+      weight: 100
+  - match:
+    - headers:
+        x-user-group:
+          exact: "group-b"
+    route:
+    - destination:
+        host: my-app-svc
+        subset: variantB
+      weight: 100
+  - route:
+    - destination:
+        host: my-app-svc
+        subset: variantA
+      weight: 50
+    - destination:
+        host: my-app-svc
+        subset: variantB
+      weight: 50
+```
+
+
+<ins>Measuring business metrics</ins>:
+
+- Emit custom metrics (Prometheus counters) for events: purchase_total, signup_total, ad_click_total labeled by variant.
+
+- Build Grafana panels and use statistical tests (e.g., chi-square) to determine significance.
+
 
 
 

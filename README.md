@@ -68,6 +68,24 @@ This README explains *how* progressive delivery is implemented in Kubernetes-bas
 
 (5). If bad → rollback instantly
 
+
+###  Canary vs Blue-Green vs A/B Testing
+
+| Method | Purpose | Traffic Split | Used When |
+|--------|---------|---------------|-----------|
+| **Canary Deployment** | Safe rollout | Gradual (1% → 10% → 50% → 100%) | New app/model version rollout |
+| **Blue-Green Deployment** | Zero-downtime switch | 100% on Blue → 100% on Green | Infrastructure/app upgrades |
+| **A/B Testing** | Experiment on real users | Parallel different versions | Optimize ML model behavior, UX |
+
+
+<ins>Simple definition</ins>
+
+- Blue-Green → Two full environments, switch all traffic at once
+
+- Canary → Gradual rollout with monitoring
+
+- A/B Testing → Compare models/versions for business metrics (CTR, conversion, accuracy)
+
 ---
 
 ## Architecture & Components

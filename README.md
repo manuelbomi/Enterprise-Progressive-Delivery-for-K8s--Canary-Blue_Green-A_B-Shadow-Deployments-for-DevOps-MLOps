@@ -181,10 +181,30 @@ kubectl apply -f service.yaml
 ```
 
 
-### 2)<ins>Install Argo Rollouts and configure Istio virtualservice (if using Istio) </ins>
+### 2) <ins>Install Argo Rollouts and configure Istio virtualservice (if using Istio) </ins>
 
 
 (Assume Istio is installed and a Gateway exists.)
+
+**istio-destinationrule.yaml — ensure subsets**
+
+```python
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: my-app-destination
+spec:
+  host: my-app-svc
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+```
+
+#### istio-virtualservice.yaml — virtual service that Argo Rollouts updates via TrafficSplit (Argo will set weight)
 
 
 

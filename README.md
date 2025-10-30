@@ -587,6 +587,120 @@ spec:
 >  Shadow requests should be asynchronous or non-blocking to avoid latency impact.
 
 
+---
+
+## Monitoring, Alerting & Automated Rollback 
+
+#### Prometheus Alert (example) — trigger if new version error rate > 5% relative to baseline
+
+**prometheus-alerts.yaml**
+
+```python
+groups:
+- name: canary-alerts
+  rules:
+  - alert: CanaryHighErrorRate
+    expr: |
+      # Compute error rate difference between canary (v2) and stable (v1)
+      (
+        sum(rate(http_requests_total{job="my-app",version="v2",status=~"5.."}[2m]))
+        /
+        sum(rate(http_requests_total{job="my-app",version="v2"}[2m]))
+      )
+      -
+      (
+        sum(rate(http_requests_total{job="my-app",version="v1",status=~"5.."}[2m]))
+        /
+        sum(rate(http_requests_total{job="my-app",version="v1"}[2m]))
+      )
+      > 0.03  # if v2 error rate is > 3% worse than v1
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Canary v2 error rate increased vs v1"
+      description: "Canary v2 error rate is significantly higher than baseline v1. Consider rollback."
+```
+
+---
+
+## Hook-based Automated Rollback
+
+##### Alertmanager can send a webhook to an automation endpoint.
+
+##### A small service (or script) receives alert and calls Argo Rollouts API to abort or promote or rollback.
+
+**Example simple rollback call (kubectl patch)**:
+
+```python
+# roll back by scaling down new ReplicaSet and scaling old ReplicaSet
+kubectl argo rollouts abort rollout my-app-rollout --namespace default
+# or mark as failed:
+kubectl argo rollouts promote my-app-rollout  # promotes to stable if allowed
+```
+
+---
+
+## CI/CD & GitOps Integration Examples
+
+##### GitHub Actions: Build image, push, and update Helm values to trigger GitOps
+
+**.github/workflows/ci-cd.yaml**
+
+```python
+name: CI/CD - Build and Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        tags: ghcr.io/your-org/my-app:${{ github.sha }}
+
+    - name: Update Helm values (update image tag)
+      run: |
+        # update the helm values.yaml with the new image tag
+        yq eval -i ".image.tag = \"${{ github.sha }}\"" ./nginx-chart/values.yaml
+
+    - name: Commit and push values.yaml change to Git (triggers ArgoCD)
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add nginx-chart/values.yaml
+        git commit -m "chore: update image tag to ${{ github.sha }}"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+<ins>Flow</ins>:
+
+- CI pushes image and updates Helm values.yaml.
+
+- ArgoCD detects change in Git and syncs to cluster.
+
+- Argo Rollouts executes Canary strategy defined in the chart.
+
+
 
 
 

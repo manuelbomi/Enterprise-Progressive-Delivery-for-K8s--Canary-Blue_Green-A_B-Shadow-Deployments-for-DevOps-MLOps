@@ -362,6 +362,32 @@ You can implement /metrics endpoint with Prometheus client libraries (Python exa
 
 **deployment-blue.yaml (current)**
 
+```python
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-blue
+  labels:
+    app: my-app
+    env: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      env: blue
+  template:
+    metadata:
+      labels:
+        app: my-app
+        env: blue
+    spec:
+      containers:
+      - name: my-app
+        image: your-registry/my-app:1.0.0
+...
+
+
 
 
 

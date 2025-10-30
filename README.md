@@ -121,7 +121,7 @@ flowchart LR
 
 ### A. Canary Rollout using Argo Rollouts + Istio + Prometheus Analysis
 
-- Overview: Use Argo Rollouts to orchestrate canary steps and Istio to split traffic. Use a Prometheus-based AnalysisTemplate to decide whether to continue.
+- Overview: Use Argo Rollouts to orchesrate canary steps and Istio to split traffic. Use a Prometheus-based AnalysisTemplate to decide whether to continue.
 
 ### 1) <ins>Deploy v1 (current) Deployment + Service</ins>
 

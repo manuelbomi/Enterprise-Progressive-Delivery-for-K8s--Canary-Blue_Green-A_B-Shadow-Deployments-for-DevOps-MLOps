@@ -238,6 +238,47 @@ spec:
 **rollout-canary.yaml**
 
 
+```python
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: my-app-rollout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+        # version label will be set by updated ReplicaSet
+    spec:
+      containers:
+      - name: my-app
+        image: your-registry/my-app:1.1.0  # new version image
+        ports:
+        - containerPort: 8080
+  strategy:
+    canary:
+      canaryService: "my-app-svc"  # the service that Istio routes to
+      stableService: "my-app-stable" # optional stable svc name
+      trafficRouting:
+        istio:
+          virtualService:
+            name: my-app-virtualservice
+            port: 80
+      steps:
+      - setWeight: 10                # send 10% of traffic to new version
+      - pause: {duration: 2m}        # wait for 2 minutes and run analysis
+      - setWeight: 30                # increase to 30%
+      - pause: {duration: 5m}
+      - setWeight: 60                # 60%
+      - pause: {duration: 5m}
+      - setWeight: 100               # promote to 100%
+```
+
+
 
 
 

@@ -123,7 +123,7 @@ flowchart LR
 
 - Overview: Use Argo Rollouts to orchestrate canary steps and Istio to split traffic. Use a Prometheus-based AnalysisTemplate to decide whether to continue.
 
-- 1) Deploy v1 (current) Deployment + Service
+<ins>1) Deploy v1 (current) Deployment + Service</ins>
 
 deployment-v1.yaml
 

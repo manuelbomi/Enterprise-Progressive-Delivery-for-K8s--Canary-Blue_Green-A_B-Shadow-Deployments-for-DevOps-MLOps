@@ -701,6 +701,50 @@ jobs:
 - Argo Rollouts executes Canary strategy defined in the chart.
 
 
+---
+
+## ML-specific Validation & Metrics (examples)
+
+##### A. Model metrics exporter (Python / Flask + Prometheus client)
+
+**metrics_exporter.py**
+
+```python
+from flask import Flask, request, jsonify
+from prometheus_client import Counter, Histogram, generate_latest, CollectorRegistry, CONTENT_TYPE_LATEST
+
+app = Flask(__name__)
+
+# Counters labeled by variant and result
+pred_counter = Counter('model_predictions_total', 'Total predictions', ['variant', 'outcome'])
+latency_hist = Histogram('model_prediction_latency_seconds', 'Prediction latency', ['variant'])
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    variant = data.get('variant', 'v1')  # for A/B experiments
+    # Simulate model prediction
+    import time, random
+    start = time.time()
+    # call model here
+    latency = random.random() * 0.1
+    time.sleep(latency)
+    pred = {"label": "ok", "score": 0.9}
+    duration = time.time() - start
+    latency_hist.labels(variant=variant).observe(duration)
+    pred_counter.labels(variant=variant, outcome="success").inc()
+    return jsonify(pred)
+
+@app.route('/metrics')
+def metrics():
+    # expose Prometheus metrics
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
+```
+
+
 
 
 

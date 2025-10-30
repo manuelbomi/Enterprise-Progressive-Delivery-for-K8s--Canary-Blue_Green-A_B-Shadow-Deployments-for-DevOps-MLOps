@@ -550,6 +550,42 @@ spec:
 
 - Build Grafana panels and use statistical tests (e.g., chi-square) to determine significance.
 
+---
+
+## D. Shadow Testing (Realtime validation without impacting users)
+
+#### Goal: Mirror production traffic to a new model or app instance but do not use the response in serving real users.
+
+<ins>Approach</ins>:
+
+- Service Mesh or custom proxy duplicates incoming requests and sends copies to shadow endpoint.
+
+- The shadow instance logs predictions and returns its output to monitoring but does not alter response path.
+
+#### Istio EnvoyFilter or custom sidecar can mirror traffic. Example VirtualService mirror spec:
+
+```python
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: my-app-shadow
+spec:
+  hosts:
+  - "my-app.example.com"
+  http:
+  - route:
+    - destination:
+        host: my-app-svc
+        subset: stable
+      weight: 100
+    mirror:
+      host: my-app-svc
+      subset: candidate
+```
+
+> [!Important]
+>  Shadow requests should be asynchronous or non-blocking to avoid latency impact.
+
 
 
 

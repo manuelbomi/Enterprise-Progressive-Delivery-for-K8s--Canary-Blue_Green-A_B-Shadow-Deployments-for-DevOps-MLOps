@@ -232,6 +232,12 @@ spec:
 > Argo Rollouts can be configured to update Istio VirtualService to change weights.
 
 
+### 3) <ins>Rollout resource (Argo Rollouts) — orchestrates canary and analysis </ins>
+
+
+**rollout-canary.yaml**
+
+
 
 
 

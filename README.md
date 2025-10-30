@@ -1,4 +1,4 @@
-# Enterprise Progressive Delivery for Kubernetes — Canary, Blue/Green, A/B and Shadow Deployments for MLOps & DevOps
+# Enterprise Progressive Delivery for Kubernetes — Canary, Blue/Green, A/B Shadow Deployments for MLOps & DevOps
 
 
 
@@ -85,6 +85,29 @@ This README explains *how* progressive delivery is implemented in Kubernetes-bas
 - Canary → Gradual rollout with monitoring
 
 - A/B Testing → Compare models/versions for business metrics (CTR, conversion, accuracy)
+
+### <ins>A/B Shadow Deployment</ins> 
+
+##### It essentially is a combination of two techniques for validating new software versions or machine learning models in production: a shadow deployment, which runs a new version in parallel with the current one using real production traffic without impacting users, followed by (or in conjunction with) A/B testing, which exposes different user groups to different versions to measure real-world performance and user behavior. 
+
+<ins>Shadow Deployment (The "Shadow" part)</ins>
+##### In a shadow deployment, a new model or service (the "challenger") is deployed alongside the existing, live version (the "champion"). 
+
+- Process: A copy of the real-time production requests is sent to both the champion and the challenger. However, only the champion's output is returned to the end-user; the challenger's output is logged for analysis.
+
+- Purpose: This allows engineers to test the new version's performance, stability, and behavior under actual production load and conditions without any risk to the live user experience or system operations. It is ideal for "sanity checking" a new model or testing infrastructure changes.
+
+- Advantage: Risk mitigation is the primary benefit, as potential errors, performance bottlenecks, or bugs in the new version do not affect live users
+
+<ins>A/B Testing (The "A/B" part)</ins>
+
+##### A/B testing is a controlled experiment where users are randomly divided into groups, each exposed to a different variation of a product or feature. 
+
+-  Process: Users in Group A interact with the existing version (champion), while users in Group B interact with the new version (challenger). The responses from both are live and affect the user experience.
+  
+- Purpose: The goal is to compare specific business metrics (e.g., conversion rates, engagement, click-through rates) to determine which version performs better based on actual user behavior and feedback.
+  
+- Advantage: Provides statistically significant, empirical data on how a new feature or model impacts the user experience and business outcomes. 
 
 ---
 

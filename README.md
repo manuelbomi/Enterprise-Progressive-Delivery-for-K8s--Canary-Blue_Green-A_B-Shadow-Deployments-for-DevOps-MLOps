@@ -62,6 +62,7 @@ Typical components in a progressive delivery pipeline:
 Diagram (Mermaid — place into GitHub README that supports Mermaid):
 
 ```mermaid
+
 flowchart LR
   A[Developer Push] -->|CI Build| B[Container Registry]
   B --> C[Git (Helm / manifests)]
@@ -73,6 +74,7 @@ flowchart LR
   G --> I[Metrics Prometheus]
   I --> J[Alertmanager / Analysis]
   J -->|Rollback| E
+```
 
 
 

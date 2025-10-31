@@ -40,7 +40,7 @@ This README explains *how* progressive delivery is implemented in Kubernetes-bas
 - **Canary Deployment** — deploy new version to a small percentage of traffic, observe metrics, incrementally increase traffic until 100% or rollback to the old model/app version.  
 - **Blue/Green Deployment** — run two full environments (Blue = current, Green = new). Switch traffic from Blue → Green atomically (DNS or load balancer).  
 - **A/B Testing** — route distinct cohorts of real users to different versions to measure business KPIs (CTR, conversion).  
-- **Shadow Testing** — mirror real production traffic to the new version without serving the new version's responses to users; used to validate behavior under real load.  
+- **Shadow Testing** — mirror real production traffic to the new version without serving teh new version's responses to users; used to validate behavior under real load.  
 - **Automated Rollback** — configured alerts or analysis results trigger automatic rollback to the previous safe release.  
 - **Analysis-driven Promotion** — use observability (Prometheus metrics, model quality logs) to decide whether to proceed with rollout steps.
 

@@ -273,7 +273,7 @@ spec:
       version: v2
 ```
 
-#### istio-virtualservice.yaml — virtual service that Argo Rollouts updates via TrafficSplit (Argo will set weight)
+#### istio-virtualservice.yaml — virtual service that Argo Rollouts updates via TrafficSplit (Argo will set weigth)
 
 ```python
 apiVersion: networking.istio.io/v1beta1
